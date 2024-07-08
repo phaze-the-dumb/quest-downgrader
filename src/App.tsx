@@ -4,6 +4,9 @@ let App = () => {
   let url = new URL(window.location.href);
   let blob = url.searchParams.get('blob');
 
+  let finalDownloadUrl = '';
+  let downloadButton: HTMLElement;
+
   if(blob){
     localStorage.setItem('blob', blob);
     document.write("Authentication finished, you may close this window now");
@@ -106,12 +109,14 @@ let App = () => {
 
     console.log(token);
 
-    window.open('https://securecdn.oculus.com/binaries/download/?id=' + binary + '&access_token=' + token);
+    finalDownloadUrl = 'https://securecdn.oculus.com/binaries/download/?id=' + binary + '&access_token=' + token;
+    downloadButton.style.display = 'inline-block';
   }
 
   return (
     <>
       <div onClick={startLogin} class="button">Start</div><br />
+      <div style={{ display: 'none' }} ref={( el ) => downloadButton = el} onClick={() => window.open(finalDownloadUrl)} class="button">Download</div><br />
     </>
   )
 }
