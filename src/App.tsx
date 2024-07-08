@@ -131,7 +131,7 @@ let App = () => {
         <div onClick={tryUseSavedToken} class="button">Download</div><br /><br />
 
         <p style={{ color: 'white', margin: '10px' }}>
-          <b>PLEASE NOTE: </b>This app is not affiliated with meta or oculus in any way. Your login details are never saved and are only proxied through cloudflare workers so we can obtain an access token to verify you own the app you are trying to download.
+          <b>PLEASE NOTE: </b>This app is not affiliated with meta or oculus in any way. Your login details are never saved outisde of this browser and are only proxied through cloudflare workers so we can obtain an access token to verify you own the app you are trying to download.
         </p>
       </div>
 
