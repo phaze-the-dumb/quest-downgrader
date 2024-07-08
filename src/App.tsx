@@ -140,6 +140,8 @@ let App = () => {
 
         <div onClick={startLogin} class="button">Try This.</div><br /><br />
       </div>
+
+      <div class="thanks">Thanks to kaitlyn for figuring this method out.</div>
     </>
   )
 }
