@@ -19,7 +19,7 @@ let App = () => {
 
   let tryUseSavedToken = () => {
     let token = cooki.getStore("token");
-    if(!token)startLogin();
+    if(!token)return startLogin();
 
     finalDownloadUrl = 'https://securecdn.oculus.com/binaries/download/?id=' + binary + '&access_token=' + token;
     window.open(finalDownloadUrl);
