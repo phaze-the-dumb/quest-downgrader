@@ -1,3 +1,5 @@
+import * as cooki from './cookilib';
+
 let App = () => {
   let token: string;
 
@@ -5,7 +7,6 @@ let App = () => {
   let blob = url.searchParams.get('blob');
 
   let finalDownloadUrl = '';
-  let downloadButton: HTMLElement;
 
   if(blob){
     localStorage.setItem('blob', blob);
@@ -15,6 +16,14 @@ let App = () => {
   }
 
   let binary = url.searchParams.get('bin_id')!;
+
+  let tryUseSavedToken = () => {
+    let token = cooki.getStore("token");
+    if(!token)startLogin();
+
+    finalDownloadUrl = 'https://securecdn.oculus.com/binaries/download/?id=' + binary + '&access_token=' + token;
+    window.open(finalDownloadUrl);
+  }
 
   let startLogin = async () => {
     let res = await fetch(`https://cors-proxy.phaze.workers.dev/?url=https://meta.graph.meta.com/webview_tokens_query`, {
@@ -108,15 +117,30 @@ let App = () => {
     let token = resJson.access_token;
 
     console.log(token);
+    cooki.setStore("token", token);
 
     finalDownloadUrl = 'https://securecdn.oculus.com/binaries/download/?id=' + binary + '&access_token=' + token;
-    downloadButton.style.display = 'inline-block';
+    window.open(finalDownloadUrl);
   }
 
   return (
     <>
-      <div onClick={startLogin} class="button">Start</div><br />
-      <div style={{ display: 'none' }} ref={( el ) => downloadButton = el} onClick={() => window.open(finalDownloadUrl)} class="button">Download</div><br />
+      <div class="cover"></div>
+      <div class="stage">
+        <h1 style={{ color: 'white' }}>Quest App Downloader.</h1>
+
+        <div onClick={tryUseSavedToken} class="button">Download</div><br /><br />
+
+        <p style={{ color: 'white', margin: '10px' }}>
+          <b>PLEASE NOTE: </b>This app is not affiliated with meta or oculus in any way. Your login details are never saved and are only proxied through cloudflare workers so we can obtain an access token to verify you own the app you are trying to download.
+        </p>
+      </div>
+
+      <div class="error">
+        <p style={{ color: 'white' }}>Download not working?</p>
+
+        <div onClick={startLogin} class="button">Try This.</div><br /><br />
+      </div>
     </>
   )
 }
