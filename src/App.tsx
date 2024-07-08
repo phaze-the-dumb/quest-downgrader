@@ -10,9 +10,8 @@ let App = () => {
 
   if(blob){
     localStorage.setItem('blob', blob);
-    document.write("Authentication finished, you may close this window now");
 
-    return;
+    return ( <p style={{ color: 'white' }}>Flow finished, you may close this popup now.</p>);
   }
 
   let binary = url.searchParams.get('bin_id')!;
