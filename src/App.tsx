@@ -1,5 +1,7 @@
 import * as cooki from './cookilib';
 
+const VALID_RETURN_URLS = [ "https://localhost:5173/login" ]
+
 let App = () => {
   let token: string;
 
@@ -23,7 +25,11 @@ let App = () => {
     if(!token)return startLogin();
 
     if(returnUrl){
-      window.location.href = returnUrl + '?access_token=' + token;
+      if(VALID_RETURN_URLS.includes(returnUrl))
+        window.location.href = returnUrl + '?access_token=' + token;
+      else
+        window.location.href = returnUrl;
+
       return;
     };
 
@@ -126,7 +132,11 @@ let App = () => {
     cooki.setStore("token", token);
 
     if(returnUrl){
-      window.location.href = returnUrl + '?access_token=' + accessToken;
+      if(VALID_RETURN_URLS.includes(returnUrl))
+        window.location.href = returnUrl + '?access_token=' + token;
+      else
+        window.location.href = returnUrl;
+      
       return;
     };
 
