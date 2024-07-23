@@ -25,7 +25,7 @@ let App = () => {
     if(!token)return startLogin();
 
     if(returnUrl){
-      if(VALID_RETURN_URLS.includes(returnUrl))
+      if(VALID_RETURN_URLS.indexOf(returnUrl) != -1)
         window.location.href = returnUrl + '?access_token=' + token;
       else
         window.location.href = returnUrl;
@@ -132,7 +132,7 @@ let App = () => {
     cooki.setStore("token", token);
 
     if(returnUrl){
-      if(VALID_RETURN_URLS.includes(returnUrl))
+      if(VALID_RETURN_URLS.indexOf(returnUrl) != -1)
         window.location.href = returnUrl + '?access_token=' + token;
       else
         window.location.href = returnUrl;
