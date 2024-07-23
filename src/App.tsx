@@ -110,11 +110,6 @@ let App = () => {
   }
 
   let doOtherThingToToken = async ( accessToken: string ) => {
-    if(returnUrl){
-      window.location.href = returnUrl + '?access_token=' + accessToken;
-      return;
-    };
-
     let res = await fetch(`https://cors-proxy.phaze.workers.dev/?url=https://graph.oculus.com/authenticate_application%3Fapp_id=1481000308606657%26access_token=${accessToken}`, {
       method: 'POST',
       headers: {
@@ -129,6 +124,11 @@ let App = () => {
 
     console.log(token);
     cooki.setStore("token", token);
+
+    if(returnUrl){
+      window.location.href = returnUrl + '?access_token=' + accessToken;
+      return;
+    };
 
     finalDownloadUrl = 'https://securecdn.oculus.com/binaries/download/?id=' + binary + '&access_token=' + token;
     window.open(finalDownloadUrl);
