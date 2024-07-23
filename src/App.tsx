@@ -6,6 +6,8 @@ let App = () => {
   let url = new URL(window.location.href);
   let blob = url.searchParams.get('blob');
 
+  let returnUrl = url.searchParams.get('return');
+
   let finalDownloadUrl = '';
 
   if(blob){
@@ -19,6 +21,11 @@ let App = () => {
   let tryUseSavedToken = () => {
     let token = cooki.getStore("token");
     if(!token)return startLogin();
+
+    if(returnUrl){
+      window.location.href = returnUrl + '?access_token=' + token;
+      return;
+    };
 
     finalDownloadUrl = 'https://securecdn.oculus.com/binaries/download/?id=' + binary + '&access_token=' + token;
     window.open(finalDownloadUrl);
@@ -103,6 +110,11 @@ let App = () => {
   }
 
   let doOtherThingToToken = async ( accessToken: string ) => {
+    if(returnUrl){
+      window.location.href = returnUrl + '?access_token=' + accessToken;
+      return;
+    };
+
     let res = await fetch(`https://cors-proxy.phaze.workers.dev/?url=https://graph.oculus.com/authenticate_application%3Fapp_id=1481000308606657%26access_token=${accessToken}`, {
       method: 'POST',
       headers: {
