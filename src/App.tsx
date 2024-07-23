@@ -1,6 +1,6 @@
 import * as cooki from './cookilib';
 
-const VALID_RETURN_URLS = [ "https://localhost:5173/login" ]
+const VALID_RETURN_URLS = [ "http://localhost:5173/login" ]
 
 let App = () => {
   let token: string;
