@@ -1,3 +1,4 @@
+import { Show } from 'solid-js';
 import * as cooki from './cookilib';
 
 let App = () => {
@@ -138,7 +139,13 @@ let App = () => {
     <>
       <div class="cover"></div>
       <div class="stage">
-        <h1 style={{ color: 'white' }}>Quest App Downloader.</h1>
+        <h1 style={{ color: 'white' }}>
+          <Show when={!returnUrl} fallback={
+            <>Meta Authenticator</>
+          }>
+            Quest App Downloader.
+          </Show>
+        </h1>
 
         <div onClick={tryUseSavedToken} class="button">Authenticate</div><br /><br />
 
@@ -148,7 +155,13 @@ let App = () => {
       </div>
 
       <div class="error">
-        <p style={{ color: 'white' }}>Download not working?</p>
+        <p style={{ color: 'white' }}>
+          <Show when={!returnUrl} fallback={
+            <>Authentication not working?</>
+          }>
+            Download not working?
+          </Show>
+        </p>
 
         <div onClick={startLogin} class="button">Try This.</div><br /><br />
       </div>
