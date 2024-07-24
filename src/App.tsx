@@ -1,7 +1,7 @@
 import { Show } from 'solid-js';
 import * as cooki from './cookilib';
 
-const VALID_RETURN_URLS = [ "http://localhost:5173/login", "http://battlesaber.net/login" ]
+const VALID_RETURN_URLS = [ "http://localhost:5173/login", "https://battlesaber.net/login", "https://www.battlesaber.net/login" ]
 
 let App = () => {
   let token: string;
