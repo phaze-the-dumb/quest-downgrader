@@ -52,7 +52,19 @@ let App = () => {
     let resJson: any = await res.json();
 
     token = resJson.native_sso_token;
-    let win = window.open(`https://meta-login-spoof.phaze.workers.dev/native_sso/confirm?native_app_id=512466987071624&native_sso_etoken=${resJson.native_sso_etoken}&utm_source=skyline_splash`, "Meta Login", "width=500,height=700")!
+
+    // Attempt to open in popup
+    let win = window.open(`https://meta-login-spoof.phaze.workers.dev/native_sso/confirm?native_app_id=512466987071624&native_sso_etoken=${resJson.native_sso_etoken}&utm_source=skyline_splash`, "Meta Login", "width=500,height=700");
+
+    if(!win){
+      // Attempt to open in new tab
+      win = window.open(`https://meta-login-spoof.phaze.workers.dev/native_sso/confirm?native_app_id=512466987071624&native_sso_etoken=${resJson.native_sso_etoken}&utm_source=skyline_splash`);
+    }
+
+    if(!win){
+      return alert("Failed to open popup window, Do you have popups disabled?");
+    }
+
     win.focus();
 
     let i = setInterval(() => {
