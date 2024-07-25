@@ -53,33 +53,35 @@ let App = () => {
 
     token = resJson.native_sso_token;
 
-    // Attempt to open in popup
-    let win = window.open(`https://meta-login-spoof.phaze.workers.dev/native_sso/confirm?native_app_id=512466987071624&native_sso_etoken=${resJson.native_sso_etoken}&utm_source=skyline_splash`, "Meta Login", "width=500,height=700");
+    setTimeout(() => {
+      // Attempt to open in popup
+      let win = window.open(`https://meta-login-spoof.phaze.workers.dev/native_sso/confirm?native_app_id=512466987071624&native_sso_etoken=${resJson.native_sso_etoken}&utm_source=skyline_splash`, "Meta Login", "width=500,height=700");
 
-    if(!win){
-      // Attempt to open in new tab
-      win = window.open(`https://meta-login-spoof.phaze.workers.dev/native_sso/confirm?native_app_id=512466987071624&native_sso_etoken=${resJson.native_sso_etoken}&utm_source=skyline_splash`);
-    }
-
-    if(!win){
-      return alert("Failed to open popup window, Do you have popups disabled?");
-    }
-
-    win.focus();
-
-    let i = setInterval(() => {
-      let blob = localStorage.getItem('blob');
-
-      if(blob){
-        win!.close();
-        window.clearInterval(i);
-
-        localStorage.removeItem('blob');
-
-        console.log(blob);
-        getToken(blob);
+      if(!win){
+        // Attempt to open in new tab
+        win = window.open(`https://meta-login-spoof.phaze.workers.dev/native_sso/confirm?native_app_id=512466987071624&native_sso_etoken=${resJson.native_sso_etoken}&utm_source=skyline_splash`, '_blank');
       }
-    }, 100)
+
+      if(!win){
+        return alert("Failed to open popup window, Do you have popups disabled?");
+      }
+
+      win.focus();
+
+      let i = setInterval(() => {
+        let blob = localStorage.getItem('blob');
+
+        if(blob){
+          win!.close();
+          window.clearInterval(i);
+
+          localStorage.removeItem('blob');
+
+          console.log(blob);
+          getToken(blob);
+        }
+      }, 100)
+    })
   }
 
   let getToken = async ( blob: string ) => {
