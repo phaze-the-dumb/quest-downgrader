@@ -71,7 +71,7 @@ let App = () => {
       let blob = localStorage.getItem('blob');
 
       if(blob){
-        win.close();
+        win!.close();
         window.clearInterval(i);
 
         localStorage.removeItem('blob');
