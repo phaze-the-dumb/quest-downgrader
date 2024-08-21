@@ -53,11 +53,10 @@ let WebUsb = ( props: WebUsbProps ) => {
       let adb: Adb = new Adb(transport);
 
       props.webUsbCallback(async ( url ) => {
-        // console.log('Downloading....', 'https://cors-proxy.phaze.workers.dev/?stream=yes&url=' + encodeURIComponent(url));
+        console.log('Downloading....', 'https://cors-proxy.phaze.workers.dev/?stream=yes&url=' + encodeURIComponent(url));
         let signal = new AbortController();
 
-        // let res = await fetch('https://cors-proxy.phaze.workers.dev/?stream=yes&url=' + encodeURIComponent(url), { signal: signal.signal });
-        let res = await fetch('https://cdn.phaz.uk/beat-saber-1.28.apk', { signal: signal.signal });
+        let res = await fetch('https://cors-proxy.phaze.workers.dev/?stream=yes&url=' + encodeURIComponent(url), { signal: signal.signal });
 
         console.log(res.status);
 
