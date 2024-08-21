@@ -45,7 +45,7 @@ body{
   height: 350px;
   border-radius: 10px;
   box-shadow: #0005 0 0 10px;
-  background: #aaa5;
+  background: #5555;
   backdrop-filter: blur(20px);
   z-index: 10;
   text-align: center;
@@ -60,7 +60,7 @@ body{
   height: 100px;
   border-radius: 10px;
   box-shadow: #0005 0 0 10px;
-  background: #aaa5;
+  background: #5555;
   backdrop-filter: blur(20px);
   z-index: 10;
   text-align: center;
@@ -72,4 +72,99 @@ body{
   left: 50%;
   transform: translateX(-50%);
   color: white;
+}
+
+.webusb-popup-blur{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+
+.webusb-popup{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 350px;
+  border-radius: 10px;
+  box-shadow: #0005 0 0 10px;
+  background: #5555;
+  backdrop-filter: blur(20px);
+  z-index: 110;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+}
+
+.webusb-popup > div{
+  position: fixed;
+  width: 380px;
+  height: 350px;
+}
+
+.webusb-arrow{
+  background: url('https://cdn.phaz.uk/Assets/arrow-up-solid.svg');
+  width: 200px;
+  height: 200px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.downloading{
+  transform: translateY(-150px);
+  opacity: 0;
+  display: none;
+  color: white;
+}
+
+.loader-outer{
+  width: calc(100% - 20px);
+  height: 20px;
+  background: gray;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.loader-inner{
+  width: 0%;
+  transition: 0.25s;
+  background: #00a2ff;
+  height: 20px;
+  border-radius: 5px;
+}
+
+.loader-text{
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -20px;
+}
+
+.installing{
+  display: none;
+  color: white;
+  transform: translateY(-150px);
+  text-align: center;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.done{
+  display: none;
+  color: white;
+  transform: translateY(-150px);
+  text-align: center;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }

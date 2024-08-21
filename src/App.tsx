@@ -1,7 +1,9 @@
 import { Show } from 'solid-js';
 import * as cooki from './cookilib';
+import { WebUsb } from './WebUsb';
+import anime from 'animejs';
 
-const VALID_RETURN_URLS = [ "http://localhost:5173/login", "https://battlesaber.net/login", "https://www.battlesaber.net/login" ]
+const VALID_RETURN_URLS = [ "http://localhost:5173/login", "http://127.0.0.1:5173/login", "https://battlesaber.net/login", "https://www.battlesaber.net/login" ]
 
 let App = () => {
   let token: string;
@@ -10,8 +12,41 @@ let App = () => {
   let blob = url.searchParams.get('blob');
 
   let returnUrl = url.searchParams.get('return');
+  let beta = url.searchParams.get('beta');
 
   let finalDownloadUrl = '';
+
+  let downloadingContainer: HTMLElement;
+  let downloadingContainerSpeed: HTMLElement;
+  let downloadingContainerLoading: HTMLElement;
+  let downloadingContainerLoadingPercent: HTMLElement;
+
+  let isUsingWebUsb = false;
+  let webUsbCallback: ( url: string ) => void = () => console.log('Not Implemented');
+
+  let startDownload = () => {
+    anime({
+      targets: '.meta-note',
+      easing: 'easeInOutQuad',
+      duration: 250,
+      opacity: 0
+    });
+
+    downloadingContainer.style.display = 'block';
+    anime({
+      targets: downloadingContainer,
+      easing: 'easeInOutQuad',
+      duration: 250,
+      opacity: 1
+    });
+  }
+
+  let updateLoadingBar = ( percent: number, speed: number ) => {
+    downloadingContainerSpeed.innerHTML = (speed * 8).toFixed(2) + ' MBPS<br />';
+
+    downloadingContainerLoading.style.width = percent.toFixed(2) + '%';
+    downloadingContainerLoadingPercent.innerText = percent.toFixed(2) + '%';
+  }
 
   if(blob){
     localStorage.setItem('blob', blob);
@@ -35,7 +70,12 @@ let App = () => {
     };
 
     finalDownloadUrl = 'https://securecdn.oculus.com/binaries/download/?id=' + binary + '&access_token=' + token;
-    window.open(finalDownloadUrl);
+    if(!isUsingWebUsb){
+      window.open(finalDownloadUrl);
+      return;
+    }
+
+    webUsbCallback(finalDownloadUrl);
   }
 
   let startLogin = async () => {
@@ -156,11 +196,21 @@ let App = () => {
     };
 
     finalDownloadUrl = 'https://securecdn.oculus.com/binaries/download/?id=' + binary + '&access_token=' + token;
-    window.open(finalDownloadUrl);
+
+    if(!isUsingWebUsb){
+      window.open(finalDownloadUrl);
+      return;
+    }
+
+    webUsbCallback(finalDownloadUrl);
   }
 
   return (
     <>
+      <Show when={beta}>
+        <WebUsb usingWebUsb={() => isUsingWebUsb = true} webUsbCallback={( cb: ( url: string ) => void ) => webUsbCallback = cb} updateLoadingBar={updateLoadingBar} startDownload={startDownload} />
+      </Show>
+
       <div class="cover"></div>
       <div class="stage">
         <h1 style={{ color: 'white' }}>
@@ -171,11 +221,29 @@ let App = () => {
           </Show>
         </h1>
 
-        <div onClick={tryUseSavedToken} class="button">Authenticate</div><br /><br />
+        <div onClick={tryUseSavedToken} class="button">
+          <Show when={!returnUrl} fallback={
+            <>Authenticate</>
+          }>
+            Download
+          </Show>
+        </div><br /><br />
 
-        <p style={{ color: 'white', margin: '10px' }}>
+        <p style={{ color: 'white', margin: '10px' }} class="meta-note">
           <b>PLEASE NOTE: </b>This app is not affiliated with meta or oculus in any way. Your login details are never saved outisde of this browser and are only proxied through cloudflare workers so we can obtain an access token to verify you own the app you are trying to download.
         </p>
+
+        <div class="downloading" ref={( el ) => downloadingContainer = el}>
+          <div>Downloading...</div>
+          <div class="loader-outer">
+            <div class="loader-text" ref={( el ) => downloadingContainerLoadingPercent = el}></div>
+            <div class="loader-inner" ref={( el ) => downloadingContainerLoading = el}></div>
+          </div>
+          <div style={{ "font-size": '10px' }} ref={( el ) => downloadingContainerSpeed = el}></div>
+        </div>
+
+        <div class="installing">Installing...</div>
+        <div class="done">Done.</div>
       </div>
 
       <div class="error">
