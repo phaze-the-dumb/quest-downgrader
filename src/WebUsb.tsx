@@ -28,6 +28,8 @@ let WebUsb = ( props: WebUsbProps ) => {
 
   let useWebUsb = async () => {
     advanceSlides();
+    if(!manager)return alert('Browser does not support webusb');
+
     const device: AdbDaemonWebUsbDevice | undefined = await manager.requestDevice();
 
     if(!device){
