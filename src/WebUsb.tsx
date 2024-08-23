@@ -6,6 +6,7 @@ import AdbWebCredentialStore from "@yume-chan/adb-credential-web";
 import anime, { AnimeInstance } from "animejs";
 import { onMount } from "solid-js";
 import { MaybeConsumable, ReadableStream } from "@yume-chan/stream-extra";
+import { Eror } from "./Error";
 
 class WebUsbProps{
   usingWebUsb!: () => void;
@@ -28,7 +29,10 @@ let WebUsb = ( props: WebUsbProps ) => {
 
   let useWebUsb = async () => {
     advanceSlides();
-    if(!manager)return alert('Browser does not support webusb');
+    if(!manager){
+      document.body.appendChild(<div><Eror header="WebUSB Error" body={<div>This browser does <b>not</b> support WebUSB, how did you even get this dialog open?</div> as HTMLElement} /></div> as HTMLElement);
+      return;
+    }
 
     const device: AdbDaemonWebUsbDevice | undefined = await manager.requestDevice();
 
@@ -55,9 +59,12 @@ let WebUsb = ( props: WebUsbProps ) => {
       let adb: Adb = new Adb(transport);
 
       props.webUsbCallback(async ( url ) => {
-        console.log('Downloading....', 'https://cors-proxy.phaze.workers.dev/?stream=yes&url=' + encodeURIComponent(url));
+        console.log('Downloading....', url);
         let signal = new AbortController();
 
+        // Download via cors proxy as oculus' cdn doesn't have cors setup for this page
+
+        // Make sure stream parameter is set or the worker will panic  v
         let res = await fetch('https://cors-proxy.phaze.workers.dev/?stream=yes&url=' + encodeURIComponent(url), { signal: signal.signal });
 
         console.log(res.status);
@@ -67,7 +74,7 @@ let WebUsb = ( props: WebUsbProps ) => {
         let totalSize = parseInt(res.headers.get('Content-Length')!);
 
         if(isNaN(totalSize)){
-          alert('Error downloading file.');
+          document.body.appendChild(<div><Eror header="Download Error" body={<div>We cannot access the APK file for you, <b>Are you sure this account owns this app?</b></div> as HTMLElement} /></div> as HTMLElement);
           return;
         }
 
@@ -123,9 +130,14 @@ let WebUsb = ( props: WebUsbProps ) => {
           console.log('file transferred');
         } catch(e){
           console.log(e)
+
+          document.body.appendChild(<div><Eror header="Transfer Error" body={<p>The quest device was disconnected before the transfer could be completed. Please reconnect the device and click the button below.</p> as HTMLElement} /></div> as HTMLElement);
+          throw e;
         } finally{
           await sync.dispose();
         }
+
+        console.log('File finished transferring');
 
         anime.set('.downloading', { translateY: '-150px' });
         anime({
@@ -157,8 +169,15 @@ let WebUsb = ( props: WebUsbProps ) => {
             .then(output => output.stdout.trim());
 
           console.log(output);
+
+          if(output !== 'Sucess'){
+            document.body.appendChild(<div><Eror header="Install Error" body={<div>We failed installing the app to your headset. <div class="adb-output">{ output }</div> For help please visit <a href="https://discord.gg/zwRfHQN2UY">this discord server</a></div> as HTMLElement} /></div> as HTMLElement);
+          }
         } catch(e){
           console.log(e)
+
+          document.body.appendChild(<div><Eror header="Install Error" body={<p>We failed installing the app to your headset. For help please visit <a href="https://discord.gg/zwRfHQN2UY">this discord server</a></p> as HTMLElement} /></div> as HTMLElement);
+          throw e;
         } finally{
           await adb.rm(filePath);
         }
@@ -191,16 +210,17 @@ let WebUsb = ( props: WebUsbProps ) => {
 
       anime({ targets: bgblur, opacity: 0, easing: 'easeInOutQuad', duration: 250, complete: () => bgblur.remove() });
       anime({ targets: container, opacity: 0, easing: 'easeInOutQuad', scale: '0.5', duration: 250, complete: () => container.remove() });
-    } catch (error) {
+    } catch (error: any) {
       if (
         typeof error === "object" &&
         error !== null &&
         "name" in error &&
         error.name === "NetworkError"
       ) {
-        alert("The device is already in use by another program. Please close the program and try again.");
+        document.body.appendChild(<div><Eror header="Connection Error" body={<div>This device is already in use by another program<br />e.g. Sidequest, ADB</div> as HTMLElement} /></div> as HTMLElement);
       }
 
+      document.body.appendChild(<div><Eror header="Error" body={<div>Something broke. For help please visit <a href="https://discord.gg/zwRfHQN2UY">this discord server</a> and send this: <div class="adb-output">{ error.toString() }</div> in the #support channel</div> as HTMLElement} /></div> as HTMLElement);
       throw error;
     }
   }
