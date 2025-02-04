@@ -3,7 +3,7 @@ import * as cooki from './cookilib';
 import { WebUsb } from './WebUsb';
 import anime from 'animejs';
 
-const VALID_RETURN_URLS = [ "http://localhost:5173/login", "http://127.0.0.1:5173/login", "https://battlesaber.net/login", "https://www.battlesaber.net/login" ]
+const VALID_RETURN_URLS = [ "http://localhost:5173/login", "http://127.0.0.1:5173/login", "https://api.battlesaber.net/api/v1/account/login_meta" ]
 
 let App = () => {
   let token: string;
